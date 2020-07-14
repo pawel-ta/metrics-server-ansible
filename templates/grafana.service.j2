@@ -1,0 +1,14 @@
+[Unit]
+Description=Grafana Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+Restart=always
+ExecStop=/usr/bin/docker stop {{ metrics_grafana_container_name }}
+ExecStart=/usr/bin/docker start {{ metrics_grafana_container_name }}
+
+[Install]
+WantedBy=multi-user.target
+

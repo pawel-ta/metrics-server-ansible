@@ -1,0 +1,12 @@
+---
+metrics_grafana_container_name: "grafana"
+metrics_grafana_image_version: 7.0.6
+metrics_grafana_container_image: "grafana/grafana:{{ metrics_grafana_image_version }}"
+metrics_grafana_instance_name: "grafana"
+metrics_grafana_admin_username: "admin"
+metrics_grafana_admin_password: "admin"
+metrics_grafana_anonymous_auth_enabled: "true"
+metrics_grafana_anonymous_auth_org_role: "Viewer"
+metrics_grafana_plugins: "grafana-worldmap-panel"
+metrics_grafana_domain: "localhost"
+

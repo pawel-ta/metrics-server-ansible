@@ -1,12 +1,23 @@
 ---
+# Grafana Docker container
 metrics_grafana_container_name: "grafana"
 metrics_grafana_image_version: 7.0.6
 metrics_grafana_container_image: "grafana/grafana:{{ metrics_grafana_image_version }}"
 metrics_grafana_instance_name: "grafana"
+
+# Grafana Authentication
 metrics_grafana_admin_username: "admin"
 metrics_grafana_admin_password: "admin"
 metrics_grafana_anonymous_auth_enabled: "true"
 metrics_grafana_anonymous_auth_org_role: "Viewer"
+
+# Grafana volumes
+metrics_grafana_data_directory_host: "/var/lib/grafana"
+metrics_grafana_log_directory_host: "/var/log/grafana"
+
+# Grafana misc
 metrics_grafana_plugins: "grafana-worldmap-panel"
+
+# Grafana network and web page
 metrics_grafana_domain: "localhost"
 

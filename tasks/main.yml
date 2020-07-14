@@ -3,6 +3,27 @@
   pip:
     name: docker-py
 
+- name: Create Grafana group
+  group:
+    name: grafana
+    state: present
+
+- name: Create Grafana user
+  user:
+    name: grafana
+    group: grafana
+    uid: 472
+
+- name: Create directories for Grafana
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: grafana
+  with_items:
+    - "{{ metrics_grafana_data_directory_host }}"
+    - "{{ metrics_grafana_log_directory_host }}"
+
 - name: Create Grafana docker container
   docker_container:
     name: "{{ metrics_grafana_container_name }}"
@@ -19,6 +40,9 @@
       GF_INSTALL_PLUGINS: "{{ metrics_grafana_plugins }}"
       GF_SERVER_DOMAIN: "{{ metrics_grafana_domain }}"
       GF_SERVER_ROOT_URL: "http://{{ metrics_grafana_domain }}:80"
+    volumes:
+      - "{{ metrics_grafana_data_directory_host }}:/var/lib/grafana"
+      - "{{ metrics_grafana_log_directory_host }}:/var/log/grafana"
 
 - name: Copy Grafana Systemd unit file
   template:

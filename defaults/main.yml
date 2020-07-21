@@ -21,3 +21,12 @@ metrics_grafana_plugins: "grafana-worldmap-panel"
 # Grafana network and web page
 metrics_grafana_domain: "localhost"
 
+# Prometheus Docker container
+metrics_prometheus_container_name: "prometheus"
+metrics_prometheus_image_version: v2.19.2
+metrics_prometheus_container_image: "prom/prometheus:{{metrics_prometheus_image_version}}"
+metrics_prometheus_instance_name: "prometheus"
+
+# Prometheus volumes
+metrics_prometheus_config_host: "/opt/tmp/prometheus.yml"
+metrics_prometheus_data_directory_host: "/var/log/prometheus"

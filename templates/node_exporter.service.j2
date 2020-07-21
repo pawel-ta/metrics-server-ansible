@@ -1,0 +1,14 @@
+[Unit]
+Description=Node Exporter Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+Restart=always
+ExecStop=/usr/bin/docker stop {{ metrics_node_exporter_container_name }}
+ExecStart=/usr/bin/docker start -a {{ metrics_node_exporter_container_name }}
+
+[Install]
+WantedBy=multi-user.target
+

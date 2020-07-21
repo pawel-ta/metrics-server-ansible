@@ -1,0 +1,33 @@
+---
+- name: Create Node Exporter docker container
+  docker_container:
+    name: "{{ metrics_node_exporter_container_name }}"
+    image: "{{ metrics_node_exporter_container_image }}"
+    state: present
+    network_mode: host
+    pid_mode: host
+    volumes:
+      - "/:/host:ro,rslave"
+    entrypoint: /bin/node_exporter --path.rootfs=/host
+
+- name: Copy Node Exporter Systemd unit file
+  template:
+    src: "templates/node_exporter.service.j2"
+    dest: "/lib/systemd/system/node_exporter.service"
+  notify: reload systemd
+
+- name: Start Node Exporter service
+  systemd:
+    name: node_exporter
+    state: started
+
+- name: Display Node exporter service facts
+  debug:
+    msg: "{{ ansible_facts.services['node_exporter.service'] }}"
+
+- name: Enable Node Exporter service
+  systemd:
+    name: node_exporter
+    enabled: true
+  when: ansible_facts.services['node_exporter.service'] is defined and ansible_facts.services['node_exporter.service']['status'] == "disabled"
+

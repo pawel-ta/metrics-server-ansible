@@ -1,8 +1,4 @@
 ---
-- name: Ensure docker python library is installed
-  pip:
-    name: docker-py
-
 - name: Create Grafana group
   group:
     name: grafana
@@ -24,7 +20,25 @@
     - "{{ metrics_grafana_data_directory_host }}"
     - "{{ metrics_grafana_log_directory_host }}"
 
-- name: Create Grafana docker container
+# Grafana container restarts after downloading plugins - it cannot be controlled by systemd
+- name: Create Grafana docker container so it can download plugins
+  docker_container:
+    name: "{{ metrics_grafana_container_name }}"
+    image: "{{ metrics_grafana_container_image }}"
+    state: started
+    ports:
+      - "80:3000"
+    env:
+      GF_INSTALL_PLUGINS: "{{ metrics_grafana_plugins }}"
+    volumes:
+      - "{{ metrics_grafana_data_directory_host }}:/var/lib/grafana"
+      - "{{ metrics_grafana_log_directory_host }}:/var/log/grafana"
+
+- name: Wait for Grafana docker to install plugins
+  wait_for:
+    timeout: 120
+
+- name: Create Grafana docker container without plugins env variable
   docker_container:
     name: "{{ metrics_grafana_container_name }}"
     image: "{{ metrics_grafana_container_image }}"
@@ -35,9 +49,9 @@
       GF_DEFAULT_INSTANCE_NAME: "{{ metrics_grafana_instance_name }}"
       GF_SECURITY_ADMIN_USER: "{{ metrics_grafana_admin_username }}"
       GF_SECURITY_ADMIN_PASSWORD: "{{ metrics_grafana_admin_password }}"
+      GF_INSTALL_PLUGINS: ""
       GF_AUTH_ANONYMOUS_ENABLED: "{{ metrics_grafana_anonymous_auth_enabled }}"
       GF_AUTH_ANONYMOUS_ORG_ROLE: "{{ metrics_grafana_anonymous_auth_org_role }}"
-      GF_INSTALL_PLUGINS: "{{ metrics_grafana_plugins }}"
       GF_SERVER_DOMAIN: "{{ metrics_grafana_domain }}"
       GF_SERVER_ROOT_URL: "http://{{ metrics_grafana_domain }}:80"
     volumes:
@@ -48,6 +62,7 @@
   template:
     src: "templates/grafana.service.j2"
     dest: "/lib/systemd/system/grafana.service"
+  notify: reload systemd
 
 - name: Enable and start Grafana service
   systemd:

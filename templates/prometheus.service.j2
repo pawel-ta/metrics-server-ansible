@@ -1,0 +1,14 @@
+[Unit]
+Description=Prometheus Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+Restart=on-failure
+ExecStop=/usr/bin/docker stop {{ metrics_prometheus_container_name }}
+ExecStart=/usr/bin/docker start -a {{ metrics_prometheus_container_name }}
+
+[Install]
+WantedBy=multi-user.target
+

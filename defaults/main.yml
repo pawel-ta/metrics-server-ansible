@@ -1,7 +1,7 @@
 ---
 # Grafana Docker container
 metrics_grafana_container_name: "grafana"
-metrics_grafana_image_version: 7.0.6
+metrics_grafana_image_version: 7.1.0
 metrics_grafana_container_image: "grafana/grafana:{{ metrics_grafana_image_version }}"
 metrics_grafana_instance_name: "grafana"
 
@@ -24,9 +24,16 @@ metrics_grafana_domain: "localhost"
 # Prometheus Docker container
 metrics_prometheus_container_name: "prometheus"
 metrics_prometheus_image_version: v2.19.2
-metrics_prometheus_container_image: "prom/prometheus:{{metrics_prometheus_image_version}}"
+metrics_prometheus_container_image: "prom/prometheus:{{ metrics_prometheus_image_version }}"
 metrics_prometheus_instance_name: "prometheus"
 
 # Prometheus volumes
-metrics_prometheus_config_host: "/opt/tmp/prometheus.yml"
+metrics_prometheus_config_directory_host: "/opt/tmp"
+metrics_prometheus_config_host: "{{ metrics_prometheus_config_directory_host }}/prometheus.yml"
 metrics_prometheus_data_directory_host: "/var/log/prometheus"
+
+# Node Exporter Docker container
+metrics_node_exporter_container_name: "node_exporter"
+metrics_node_exporter_image_version: v1.0.1
+metrics_node_exporter_container_image: "prom/node-exporter:{{ metrics_node_exporter_image_version }}"
+

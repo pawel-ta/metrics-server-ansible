@@ -5,9 +5,9 @@ Requires=docker.service
 
 [Service]
 Type=simple
-Restart=always
+Restart=on-failure
 ExecStop=/usr/bin/docker stop {{ metrics_grafana_container_name }}
-ExecStart=/usr/bin/docker start {{ metrics_grafana_container_name }}
+ExecStart=/usr/bin/docker start -a {{ metrics_grafana_container_name }}
 
 [Install]
 WantedBy=multi-user.target
